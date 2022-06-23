@@ -1,0 +1,165 @@
+/******************************************************************************
+  (c) 2020 Copyright, Real-Time Innovations, Inc. (RTI) All rights reserved.
+
+   Licensed according to the terms in the LICENSE.md file located at the root 
+   of this software repository:
+
+                                LICENSE.md
+
+*****************************************************************************/
+
+#ifndef VARIANT_IDL
+#define VARIANT_IDL
+
+#include "res/types/data/base/Primitives_t.idl"
+
+module dds {
+    module base {
+        
+        /**********************************************************************
+        * Kind of Primitive Types 
+        */
+        enum PrimitiveKind { 
+            UNKNOWN,
+
+            /* Boolean Type: TRUE or FALSE */
+            BOOLEAN,
+
+            /* Byte Type (opaque) */
+            BYTE,
+
+            /* Character Types */
+            CHAR8, CHAR16,
+
+            /* Integer Types */
+             INT8,  INT16,  INT32,  INT64, 
+            UINT8, UINT16, UINT32, UINT64,
+
+            /* Real Types */
+            FLOAT32, FLOAT64, FLOAT128,
+
+            /* String Types */
+            STRING4, STRING8, STRING16, STRING32, STRING64, STRING128, STRING256
+        };
+
+
+        /**********************************************************************
+        * Variant32 - can hold any one of primitive type variant, upto 4 bytes
+        *           - fixed length
+        */
+        @nested
+        union Variant32 switch (base::PrimitiveKind) {
+
+        case base::BOOLEAN:
+            base::Boolean boolean_v; 
+        
+        case base::CHAR8:
+            base::Char8 char8_v;
+        
+        case base::CHAR16:
+            base::Char16 char16_v;
+
+        case base::INT32:
+            base::Int32 int32_v;
+        
+        case base::UINT32:
+            base::UInt32 uint32_v;
+        
+        case base::FLOAT32:
+            base::Float32 float32_v;
+        
+        case base::STRING4:
+            base::StringBuf4 strbuf4_v;
+
+        default:
+            base::Byte invalid_v;
+        };
+         
+        /**********************************************************************
+        * Variant64 - can hold any one of primitive type variant, upto 8 bytes 
+        *           - fixed length
+        */
+        @nested
+        union Variant64 switch (base::PrimitiveKind) {
+
+        case base::BOOLEAN:
+            base::Boolean boolean_v; 
+        
+        case base::CHAR8:
+            base::Char8 char8_v;
+        
+        case base::CHAR16:
+            base::Char16 char16_v;
+
+        case base::INT32:
+            base::Int32 int32_v;
+        
+        case base::UINT32:
+            base::UInt32 uint32_v;
+        
+        case base::INT64:
+            base::Int64 int64_v;
+        
+        case base::UINT64:
+            base::UInt64 uint64_v;
+        
+        case base::FLOAT32:
+            base::Float32 float32_v;
+        
+        case base::FLOAT64:
+            base::Float64 float64_v;
+        
+        case base::STRING8:
+            base::StringBuf8 strbuf8_v;
+
+        default:
+            base::Byte invalid_v;
+        };
+          
+        /**********************************************************************
+        * Variant128 - can hold any one of primitive type variant, upto 16 bytes 
+        *            - fixed length
+        */
+        @nested
+        union Variant128 switch (base::PrimitiveKind) {
+
+        case base::BOOLEAN:
+            base::Boolean boolean_v; 
+        
+        case base::CHAR8:
+            base::Char8 char8_v;
+        
+        case base::CHAR16:
+            base::Char16 char16_v;
+
+        case base::INT32:
+            base::Int32 int32_v;
+        
+        case base::UINT32:
+            base::UInt32 uint32_v;
+        
+        case base::INT64:
+            base::Int64 int64_v;
+        
+        case base::UINT64:
+            base::UInt64 uint64_v;
+        
+        case base::FLOAT32:
+            base::Float32 float32_v;
+        
+        case base::FLOAT64:
+            base::Float64 float64_v;
+
+        case base::FLOAT128:
+            base::Float128 float128_v;
+        
+        case base::STRING16:
+            base::StringBuf16 strbuf16_v;
+
+        default:
+            base::Byte invalid_v;
+        };
+     };
+};
+
+#endif /* VARIANT_IDL */
