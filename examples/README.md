@@ -2,31 +2,34 @@
 Automotive architectural example using RTI Connext Micro DDS, v2 (C language)  
 NOTE: this example is targeting the non-CERT version of Connext Micro v2.  
 
+**NOTE: DO NOT START HERE**  
+This is the final step in building the example, it depends on first having the type support library in `../datatypes` be pre-built.   Make sure that library has been built before building this example.
 
 **Build the Example Applications**
 
-- Open a terminal in the (newly created) 'examples' directory.
-- Set up the environment for your planned Connext type (pro, micro3, micro2):
-    - **Pro:** set `NDDSHOME` to point to your Connext Pro installation location.
-    - **Micro:** set `RTIMEHOME` to point to your Connext Micro installation location,  
-       AND set `RTIME_TARGET_NAME` to your target architecture, such as `x64Linux4gcc7.3.0`
-- Create a build directory & use CMake to create the makefile:
+- Open a terminal in this 'examples' directory.
+- Set up the environment for your planned Connext type (pro, micro3, micro2).
+At this time only micro2/C is supported in this example, which requires setting RTIMEHOME and RTIME_TARGET_NAME, such as:
+    - `export RTIMEHOME=<your-connext-micro-install-dir>`
+    - `export RTIME_TARGET_NAME=x64Linux4gcc7.3.0`
+- Create a build directory:
+    - `mkdir build`
+    - `cd build`
+- Use CMake to create the makefile
+    - `cmake ..`
+- Build the example using 'make'
+    - `make`
 
-```
-    mkdir build
-    cd build
-    cmake ..
-    make
-```
+This will build the example applications, placing the resulting binaries in `build/x64Linux4gcc7.3.0/` (or equivalent for your target architecture).
+
 **Run the Example Applications**
 
-For convenience, a launcher script is also generated and placed in the `dest-path` location
+For convenience, a launcher script is available at `examples/run-demo.sh`
 which can be used to launch all applications in the example:
-- Open a terminal in the `dest-path` location (by default this is the top-level `examples` directory).
-
 ```
+    cd examples
     ./run-demo.sh
 ```
 
-A series of terminal tabs will open (1 for each application in the example).  
+A series of terminal tabs will open (1 for each application in the example) and messages will be printed to each terminal window.   Note that these applications together create a next-gen EE architectural framework; they handle the inter-process communications, but otherwise have no internal logic.  
 Applications can be individually exited using ctrl-C.
