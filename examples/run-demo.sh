@@ -1,5 +1,12 @@
 #!/bin/sh
 
+if [ -z "${RTIME_TARGET_NAME}" ]; then
+  RTIME_TARGET_NAME="x64Linux4gcc7.3.0"
+else
+  RTIME_TARGET_NAME="${RTIME_TARGET_NAME}"
+fi
+echo "${RTIME_TARGET_NAME}"
+
 filename=$0
 script_dir=`dirname $filename`
 executable_stimAndPrint_name="stimAndPrint"
@@ -8,7 +15,7 @@ executable_egoMotion_name="egoMotion"
 executable_localization_name="localization"
 executable_perception_name="perception"
 
-bin_dir=${script_dir}/build/x64Linux4gcc7.3.0_certprofile
+bin_dir=${script_dir}/build/${RTIME_TARGET_NAME}
 
 printError(){
     echo "***************************************************************"
