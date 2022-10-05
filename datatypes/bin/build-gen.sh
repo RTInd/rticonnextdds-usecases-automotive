@@ -23,9 +23,9 @@ DATABUS_PROJECT_DIR=$(cd $(dirname "$0")/..; pwd -P)
 # Cert or no?
 if [ $RTI_CONNEXT_SDK = "micro2cert" ]
 then
-    RTI_CERT=1
+    CERT_OPTION=-DCMAKE_C_FLAGS=-DRTI_CERT=1
 else
-    RTI_CERT=0
+    CERT_OPTION=""
 fi
 
 # Generate the Build System
@@ -37,7 +37,7 @@ cmake -B$RTI_BUILD_DIR \
       -DRTI_ARCH=$RTI_ARCH \
       -DRTI_CONNEXT_SDK=$RTI_CONNEXT_SDK \
       -DDATABUS_PROJECT_DIR=$DATABUS_PROJECT_DIR \
-      -DRTIME_CERT=$RTI_CERT \
+      $CERT_OPTION \
       -G "Unix Makefiles"
 
 if [ $? -eq 0 ]
