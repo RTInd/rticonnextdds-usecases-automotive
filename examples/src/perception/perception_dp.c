@@ -10,14 +10,14 @@
 * to use the software.
 */
 /* perception_dp.c
-* Helper file: create and configure the domain participant
+* Helper file: create and configure the Connext DDS domain participant
 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "rti_me_c.h"
-#include "disc_dpde/disc_dpde_discovery_plugin.h"
+#include "disc_dpse/disc_dpse_dpsediscovery.h"
 #include "wh_sm/wh_sm_history.h"
 #include "rh_sm/rh_sm_history.h"
 #include "netio/netio_udp.h"
@@ -42,6 +42,7 @@ Application_help(char *appname)
    Called once to set up the domain participant for the application */
 struct Application *
 Application_create(
+    const char *local_participant_name,
     DDS_Long domain_id,
     char *udp_intf,
     char *peer)
@@ -54,8 +55,8 @@ Application_create(
     RT_Registry_T *registry = NULL;
     struct UDP_InterfaceFactoryProperty *udp_property = NULL;
 
-    struct DPDE_DiscoveryPluginProperty discovery_plugin_properties =
-        DPDE_DiscoveryPluginProperty_INITIALIZER;
+    struct DPSE_DiscoveryPluginProperty discovery_plugin_properties =
+        DPSE_DiscoveryPluginProperty_INITIALIZER;
 
     struct Application *application = NULL;
     /* Uncomment to increase verbosity level:
@@ -110,61 +111,52 @@ Application_create(
     }
     *udp_property = UDP_INTERFACE_FACTORY_PROPERTY_DEFAULT;
 
-    /* To add more allowed interface(s), increase maximum and length,
-       and set interface below:
+    /* In this example we manually configure what interfaces are available.
+    * First we disable reading out the interface list. Note that on some
+    * platforms reading out the interface list has been compiled out, so
+    * this property has no effect.
     */
-    if (!DDS_StringSeq_set_maximum(&udp_property->allow_interface,2))
+    udp_property->disable_auto_interface_config = RTI_TRUE;
+
+    /* Allow and deny lists are still valid. If none are specified then
+    * all interfaces are valid.
+    */
+    if (!DDS_StringSeq_set_maximum(&udp_property->allow_interface,1))
     {
         printf("failed to set allow_interface maximum\n");
         goto done;
     }
-    if (!DDS_StringSeq_set_length(&udp_property->allow_interface,2))
+    if (!DDS_StringSeq_set_length(&udp_property->allow_interface,1))
     {
         printf("failed to set allow_interface length\n");
         goto done;
     }
 
-    /* loopback interface */
-    #if defined(RTI_DARWIN)
+    /* The name of the interface can be the anything, upto
+    * UDP_INTERFACE_MAX_IFNAME characters including the '\0' character
+    */
     *DDS_StringSeq_get_reference(&udp_property->allow_interface,0) =
-    DDS_String_dup("lo0");
-    #elif defined (RTI_LINUX)
-    *DDS_StringSeq_get_reference(&udp_property->allow_interface,0) =
-    DDS_String_dup("lo");
-    #elif defined (RTI_VXWORKS)
-    *DDS_StringSeq_get_reference(&udp_property->allow_interface,0) =
-    DDS_String_dup("lo0");
-    #elif defined(RTI_WIN32)
-    *DDS_StringSeq_get_reference(&udp_property->allow_interface,0) =
-    DDS_String_dup("Loopback Pseudo-Interface 1");
-    #else
-    *DDS_StringSeq_get_reference(&udp_property->allow_interface,0) =
-    DDS_String_dup("lo");
-    #endif
+    DDS_String_dup("loopback");
 
-    if (udp_intf != NULL)
-    { /* use interface supplied on command line */
-        *DDS_StringSeq_get_reference(&udp_property->allow_interface,1) =
-        DDS_String_dup(udp_intf);
-    }
-    else                /* use hardcoded interface */
-    {
-        #if defined(RTI_DARWIN)
-        *DDS_StringSeq_get_reference(&udp_property->allow_interface,1) =
-        DDS_String_dup("en1");
-        #elif defined (RTI_LINUX)
-        *DDS_StringSeq_get_reference(&udp_property->allow_interface,1) =
-        DDS_String_dup("eth0");
-        #elif defined (RTI_VXWORKS)
-        *DDS_StringSeq_get_reference(&udp_property->allow_interface,1) =
-        DDS_String_dup("geisc0");
-        #elif defined(RTI_WIN32)
-        *DDS_StringSeq_get_reference(&udp_property->allow_interface,1) =
-        DDS_String_dup("Local Area Connection");
-        #else
-        *DDS_StringSeq_get_reference(&udp_property->allow_interface,1) =
-        DDS_String_dup("ce0");
-        #endif
+    /* This function takes the following arguments:
+    * Param 1 is the iftable in the UDP property
+    * Param 2 is the IP address of the interface in host order
+    * Param 3 is the Netmask of the interface
+    * Param 4 is the name of the interface
+    * Param 5 are flags. The following flags are supported (use OR for multiple):
+        *      UDP_INTERFACE_INTERFACE_UP_FLAG - Interface is up
+        *      UDP_INTERFACE_INTERFACE_MULTICAST_FLAG - Interface supports multicast
+        */
+        if (!UDP_InterfaceTable_add_entry(
+            &udp_property->if_table,
+            0x7f000001,
+            0xff000000,
+            "loopback",
+            UDP_INTERFACE_INTERFACE_UP_FLAG))
+
+        {
+            printf("failed to add interface\n");
+            goto done;
     }
 
     if (!RT_Registry_register(
@@ -185,16 +177,16 @@ Application_create(
 
     if (!RT_Registry_register(
         registry,
-        "dpde",
-        DPDE_DiscoveryFactory_get_interface(),
+        "dpse",
+        DPSE_DiscoveryFactory_get_interface(),
         &discovery_plugin_properties._parent,
         NULL))
     {
-        printf("failed to register dpde\n");
+        printf("failed to register dpse\n");
         goto done;
     }
 
-    if (!RT_ComponentFactoryId_set_name(&dp_qos.discovery.discovery.name,"dpde"))
+    if (!RT_ComponentFactoryId_set_name(&dp_qos.discovery.discovery.name,"dpse"))
     {
         printf("failed to set discovery plugin name\n");
         goto done;
@@ -217,13 +209,16 @@ Application_create(
        to adjust these values */
     dp_qos.resource_limits.max_destination_ports = 32;
     dp_qos.resource_limits.max_receive_ports = 32;
-    dp_qos.resource_limits.local_topic_allocation = 6;
-    dp_qos.resource_limits.local_type_allocation = 6;
+    dp_qos.resource_limits.local_topic_allocation = 11;
+    dp_qos.resource_limits.local_type_allocation = 11;
     dp_qos.resource_limits.local_reader_allocation = 5;
     dp_qos.resource_limits.local_writer_allocation = 1;
     dp_qos.resource_limits.remote_participant_allocation = 8;
     dp_qos.resource_limits.remote_reader_allocation = 8;
     dp_qos.resource_limits.remote_writer_allocation = 8;
+
+    /* Must set the name of the domain participant in QoS for discovery */
+    strcpy(dp_qos.participant_name.name, local_participant_name);
 
     application->participant = DDS_DomainParticipantFactory_create_participant(
         factory,
@@ -320,9 +315,9 @@ Application_delete(struct Application *application)
         udp_property = NULL;
     }
 
-    if (!RT_Registry_unregister(registry, "dpde", NULL, NULL))
+    if (!RT_Registry_unregister(registry, "dpse", NULL, NULL))
     {
-        printf("failed to unregister dpde\n");
+        printf("failed to unregister dpse\n");
         return;
     }
     if (!RT_Registry_unregister(

@@ -34,6 +34,7 @@
 * "<datatype>_Subscriber_on_before_sample_deserialize",
 * "<datatype>_Subscriber_deserialize_unsigned_long", and
 * "<datatype>_Subscriber_filter_sample" functions to
+* correctly filter by the field you want to use for filtering.
 */
 
 /*#define USE_SAMPLE_FILTER*/
@@ -58,7 +59,7 @@ Application_help(char *appname);
 
 extern struct Application*
 Application_create(
-    //CertOnly: const char *local_participant_name,
+    const char *local_participant_name,
     DDS_Long domain_id,
     char *udp_intf,
     char *peer);
