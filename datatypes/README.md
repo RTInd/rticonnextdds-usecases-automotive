@@ -39,24 +39,22 @@ For example:
   where 
   - `<connext_sdk>` is the name that you want to use to refer to the build 
      for the selected SDK.  In the documentation, we use the names
-      - `pro` | `micro` | `micro2`
-     for Connext Professional, Connext Micro, and Connext Micro 2 respectively.
+      - `pro` | `micro` | `micro2` | `micro2cert`
+     for Connext Professional, Connext Micro, Connext Micro 2, and Connext Micro 2 CERT respectively.
   - `<build_type>` is the type of build
     - `Debug` : to build using the debug libraries of the selected RTI Connext SDK
     - `Release` : to build using the release libraries of the selected RTI Connext SDK 
 
-  e.g. (default)
+  e.g. (if building for Connext Pro):
 
       bin/build-gen.sh pro x64Linux4gcc7.3.0 Debug
-  or
+  
+  or (if building for the EVAL version of Micro CERT or Connext Drive):
 
-      databus/bin/build-gen.sh pro x64Linux4gcc7.3.0 Debug
+      bin/build-gen.sh micro2cert x64Linux4gcc7.3.0_certprofile Release
 
-   *NOTE:* The `build/` directory is creatd relative to the 
-    *working project directory* from where the `build-gen.sh` script was 
-    invoked (maybe the *top-level* project or an individual project).
 
-- Build the repository using the generated build system
+- Build the repository using the generated build system script:
 
       build/<connext_sdk>-<target_arch>-<build_type>.sh
         
@@ -64,7 +62,11 @@ For example:
 
       build/pro-x64Linux4gcc7.3.0-Debug.sh
 
-- You can repeat the above steps for any desired combinations of 
+  or (EVAL CERT|Drive):
+
+      build/micro2cert-x64Linux4gcc7.3.0_certprofile-Release.sh
+
+- You can repeat the above steps for any available combinations of 
   `(connext_sdk, target_arch, build_type)`
 
    - An isolated build tree is generated for each combination

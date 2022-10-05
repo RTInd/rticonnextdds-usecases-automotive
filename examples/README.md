@@ -17,6 +17,8 @@ At this time only micro2/C is supported in this example, which requires setting 
     - `cd build`
 - Use CMake to create the makefile
     - `cmake ..`
+    or:
+    - `cmake -DCMAKE_BUILD_TYPE=Release ..`
 - Build the example using 'make'
     - `make`
 

@@ -36,7 +36,7 @@ After cloning this repo:
 
 - Open a terminal in the `examples` directory.
 - Set up the environment for Connext Micro v2:
-    - `export RTIMEHOME=RTIMEHOME=<install-location-for-connext-micro2>`
+    - `export RTIMEHOME=<install-location-for-connext-micro2>`
     - `export RTIME_TARGET_NAME=x64Linux4gcc7.3.0` 
         - Note: change the above if using a different target
 - Create a build directory:

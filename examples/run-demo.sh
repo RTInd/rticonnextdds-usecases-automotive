@@ -8,7 +8,7 @@ executable_egoMotion_name="egoMotion"
 executable_localization_name="localization"
 executable_perception_name="perception"
 
-bin_dir=${script_dir}/build/x64Linux4gcc7.3.0
+bin_dir=${script_dir}/build/x64Linux4gcc7.3.0_certprofile
 
 printError(){
     echo "***************************************************************"
