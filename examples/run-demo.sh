@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ -z "${RTIME_TARGET_NAME}" ]; then
-  RTIME_TARGET_NAME="x64Linux4gcc7.3.0"
+  RTIME_TARGET_NAME="x64Linux4gcc7.3.0_certprofile"
 else
   RTIME_TARGET_NAME="${RTIME_TARGET_NAME}"
 fi

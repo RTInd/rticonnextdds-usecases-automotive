@@ -1,28 +1,32 @@
-# Next-Gen EE Example (Connext Micro 2, C)
-Automotive architectural example using RTI Connext Micro DDS, v2 (C language)  
-NOTE: this example is targeting the non-CERT version of Connext Micro v2.  
+# Next-Gen EE Example (Connext Micro Cert, C)
 
-**NOTE: DO NOT START HERE**  
-This is the final step in building the example, it depends on first having the type support library in `../datatypes` be pre-built.   Make sure that library has been built before building this example.
+Automotive architectural example using RTI Connext Micro Cert, v2 (C language)  
+
+**NOTE: DO NOT START HERE**
+
+This is the final step in building the example, it depends on first having the type support
+library in `../datatypes` be pre-built.   Make sure that library has been built before building this example.
 
 **Build the Example Applications**
 
 - Open a terminal in this 'examples' directory.
 - Set up the environment for your planned Connext type (pro, micro3, micro2).
-At this time only micro2/C is supported in this example, which requires setting RTIMEHOME and RTIME_TARGET_NAME, such as:
-    - `export RTIMEHOME=<your-connext-micro-install-dir>`
-    - `export RTIME_TARGET_NAME=x64Linux4gcc7.3.0`
+At this time only Connect Micro Cert is supported in this example, which requires setting RTIMEHOME and RTIME_TARGET_NAME, for example:
+    - `export RTIMEHOME=~/rti_connext_dds-6.1.1/rti_connext_dds_micro-2.4.14`
+    - `export RTIME_TARGET_NAME=x64Linux4gcc7.3.0_certprofile`
+
 - Create a build directory:
     - `mkdir build`
     - `cd build`
-- Use CMake to create the makefile
-    - `cmake ..`
-    or:
+
+- Use CMake to create the makefile, using a `Release` build type
     - `cmake -DCMAKE_BUILD_TYPE=Release ..`
+
 - Build the example using 'make'
     - `make`
 
-This will build the example applications, placing the resulting binaries in `build/x64Linux4gcc7.3.0/` (or equivalent for your target architecture).
+This will build the example applications, placing the resulting binaries in `build/x64Linux4gcc7.3.0_certprofile/`
+(or equivalent for your target architecture).
 
 **Run the Example Applications**
 
